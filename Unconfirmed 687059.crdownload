@@ -1,0 +1,30 @@
+DB ERROR<BR>Code: -1<BR>Message: DB Error: unknown error<BR>Userinfo: select
+                            reg_id as id,
+                            *,
+                            case when psu_diri_id_kelamin = 1 then 'Laki-Laki' else 'Perempuan' end as jenkel,
+                            ref_relig_label,
+                            to_char(reg_stat_input_time, 'YYYY-mm-dd') as tgl,
+                            std_no_rek as no_rek,
+                            coalesce(reg_id_regnumber_code,'') ||'-'|| lpad(reg_id_regnumber_serial::text,3,'0') as reg_id_regnumber,
+                            case when ref_reg_is_japres is true then 'Prestasi '||ref_reg_id_sequence  else 'Reguler '||ref_reg_id_sequence end as infojapres2,
+                            ref_reg_label_code as infojapres,
+                            case when reg_alumni_is is true then 'Ya' else 'Tidak' end as alumni,
+                            case when reg_lock_is is true then 'Ya' else 'Tidak' end as kunci,
+                            (select ref_program_label_code from oasis3.ref_academic_program where ref_program_id = reg_id_program_1) as jurusan1,
+                            (select ref_program_label_code from oasis3.ref_academic_program where ref_program_id = reg_id_program_2) as jurusan2,
+                            (select count(*) from oasis3.obj_prestudent_kelengkapan where psukel_id_psu = psu_id) ||'/'||(select count(*) from oasis3.ref_kelengkapan_register) as kelengkapan,
+                            '200500'||reg_id_regnumber_code::text||to_char(reg_id_regnumber_serial,'000') as va_bca,
+                            '017790'||reg_id_regnumber_code::text||to_char(reg_id_regnumber_serial,'000') as va_ocbc,
+                            CASE WHEN ( SELECT COUNT ( * ) FROM oasis3.obj_daftar_ulang WHERE daftar_ulang_id_reg = reg_id AND daftar_ulang_batal_type IS NULL  ) > 0 THEN
+		                    'Sudah DU' ELSE'Belum DU '
+	                        END AS status
+                         from   oasis3.ref_academic_year, oasis3.ref_academic_level, oasis3.obj_prestudent
+                                  left join oasis3.ref_global_provinsi on oasis3.ref_global_provinsi.ref_prov_id =  oasis3.obj_prestudent.psu_diri_id_provinsi
+                                  left join oasis3.ref_global_religion on psu_diri_id_agama = ref_relig_id,
+                                oasis3.obj_registration
+                                  left join oasis3.ref_registration on oasis3.ref_registration.ref_reg_id = oasis3.obj_registration.reg_id_registration
+                                  left join oasis3.obj_student on std_reg_id = reg_id
+                         where  oasis3.ref_registration.ref_reg_id_acdyear = oasis3.ref_academic_year.ref_year_id and oasis3.ref_registration.ref_reg_id_level = oasis3.ref_academic_level.ref_level_id and oasis3.obj_registration.reg_id_psu = oasis3.obj_prestudent.psu_id and ref_year_id = '2025'  and (to_char(reg_stat_input_time, 'YYYY-mm-dd')::date >= '2024-30-01' and to_char(reg_stat_input_time, 'YYYY-mm-dd')::date <= '2025-10-31')  and reg_lock_is is true
+                         order by reg_stat_input_time desc
+                       [nativecode=ERROR:  date/time field value out of range: "2024-30-01" at character 2914
+HINT:  Perhaps you need a different "datestyle" setting.]<BR>Traceback: <BR>[7] fname:/opt/lampp/htdocs/oasis3/admin/modules/reception/status_registrasi.mod, line:1334, func:query, class:db_pgsql<BR>[8] fname:/opt/lampp/htdocs/oasis3/admin/modules/reception/registration.mod, line:208, func:viewprintexport, class:status_registrasi<BR>[10] fname:/opt/lampp/htdocs/oasis3/admin/codePlates/mainUser.cpt, line:1238, func:run, class:registration<BR>[11] fname:/opt/lampp/htdocs/oasis3/siteManager/lib/smCodePlate.inc, line:302, func:codeplatethink, class:mainuser<BR>[12] fname:/opt/lampp/htdocs/oasis3/siteManager/lib/smRoot.inc, line:700, func:run, class:mainuser<BR>[13] fname:/opt/lampp/htdocs/oasis3/home/popup.php, line:23, func:completepage, class:sm_sitemanagerroot<BR>
