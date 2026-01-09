@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Secret key untuk JWT (Biasanya di .env, di sini hardcode untuk demo)
     jwtSecret: 'rahasia_super_aman_ubah_di_production',
-    mongoUri: 'mongodb://localhost:27017/hadiah-nona' // Ganti dengan MongoDB Atlas URL jika online
+    mongoUri: process.env.NUXT_MONGO_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/hadiah-nona'
   },
 
   app: {
