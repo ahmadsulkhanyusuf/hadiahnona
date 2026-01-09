@@ -1,11 +1,18 @@
 // nuxt.config.ts
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
 
   modules: [
     '@nuxtjs/tailwindcss',
-    '@nuxt/image'
+    '@nuxt/image',
+    '@nuxt/icon'
   ],
+
+  runtimeConfig: {
+    // Secret key untuk JWT (Biasanya di .env, di sini hardcode untuk demo)
+    jwtSecret: 'rahasia_super_aman_ubah_di_production',
+    mongoUri: 'mongodb://localhost:27017/hadiah-nona' // Ganti dengan MongoDB Atlas URL jika online
+  },
 
   app: {
     head: {
@@ -30,7 +37,8 @@ export default defineNuxtConfig({
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@300;400;600;700&display=swap'
-        }
+        },
+        { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css' }
       ]
     }
   },
